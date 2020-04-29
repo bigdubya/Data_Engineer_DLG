@@ -13,7 +13,7 @@ The hottest day is defined as the day that recorded the maximum single screen te
 All temperatures with a value of -99 will be assumed to be outside the scope of max temperature selection - no change required.
 Where region and country do not align region will be assumed to be correct - no change required.
 Only a subset of fields will be required for comparison, analysis and queries.
-It is expected that the underlying csv files will grow on a monthly basis and that comparisons and aggregations will span monthly intervals and be across regions - the data will be partitioned based on these assumptions with performance in mind. 
+It is expected that the underlying csv files will grow on a monthly basis and that comparisons and aggregations will span monthly intervals and be across regions - the data will be partitioned based on these assumptions with performance in mind. See Data_folder for schema. 
 
 source code contained in .py file 
 source, documentation and testing in .ipynb file
