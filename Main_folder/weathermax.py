@@ -1,27 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-
-
-
-# In[36]:
-
-
 import numpy as np
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import os
-
+from os import path
 
 class WeatherMax():
     '''
     pass file directory path with forward slashes
     '''
-    def __init__(self,directorypath):
+    def __init__(self,directorypath=os.getcwd()):
         self.directorypath = directorypath
         
     def csvtodataset(self):
@@ -29,6 +20,7 @@ class WeatherMax():
         
         #read csv files in directory
         
+    def patable(self):
         for file in os.listdir():
             if file.endswith(".csv"):
                 file1 = file
@@ -46,7 +38,7 @@ class WeatherMax():
                 table = pa.Table.from_pandas(df)
 
                 #create additional files for testing 
-
+                
                 file1 = file1.replace(".csv",".")
                 file2 = file1 + 'parquet.snappy'
                 pq.write_table(table, file2,compression='snappy')
@@ -54,7 +46,7 @@ class WeatherMax():
                 pq.write_to_dataset(table,root_path='weather_results',partition_cols=['ObsYear','ObsMonth','Region'])           
               
     def builddataset(self):
-        self.csvtodataset()
+        self.patable()
         
     def weatherresults(self):
         weather_data = pq.ParquetDataset('weather_results/')
@@ -73,24 +65,3 @@ class WeatherMax():
         
     def prntresults(self):
         self.weatherresults()
-        
-    
-
-
-# In[37]:
-
-
-
-
-
-# In[40]:
-
-
-
-
-
-# In[ ]:
-
-
-WeatherMax()
-
