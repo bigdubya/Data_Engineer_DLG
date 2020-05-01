@@ -14,13 +14,17 @@ import pyarrow.parquet as pq
 import os
 from os import path
 
-#Testing
+#Testing 
+#test from directory with csv and parquet files.
 
 #open files in excel note down row details for maximum temps
 df1 = pd.read_csv(os.path.abspath('weather.20160201.csv'))
 df2 = pd.read_csv(os.path.abspath('weather.20160301.csv'))
 
-maxtemp = max(df1['ScreenTemperature'].max(),df2['ScreenTemperature'].max())
+df_maxtemp = max(df1['ScreenTemperature'].max(),df2['ScreenTemperature'].max())
+
+#initialize weather max class.
+new_weather = weathermax1.WeatherMax(os.getcwd())
 
 class Testfile(TestCase):
     
@@ -29,7 +33,9 @@ class Testfile(TestCase):
     def test_directorypath():
         datapath = new_weather.directorypath
         assert path.exists(datapath) == True
-        
+    
+    #parquet dataset schema test
+    
     def test_builddataset():
         new_weather.builddataset()
         mnth2path = os.getcwd() + '\weather_results\ObsYear=2016\ObsMonth=2'
@@ -39,17 +45,22 @@ class Testfile(TestCase):
         assert path.isdir(mnth3path) == True
         assert path.isfile(mnth2file) == True
     
-    def testexpected(self):
+    #test parquet dataset to dataframes
+    
+    def test_pqresult(self):
         weather_data = pq.ParquetDataset('weather_results/')
         table = weather_data.read()
         weather_table_df = table.to_pandas()
-        assert expected == maxtemp
-
-
-
-
-
-
+        weather_result = weather_table_df.loc[weather_table_df['ScreenTemperature'].idxmax()]
+        pqresult = weather_result['ScreenTemperature']
+        assert pqresult == df_maxtemp
+        
+    #test class objects to static value
+    
+    def test_weathermax(self):
+        classtemp = new_weather.weather_temp()
+        assert classtemp == 15.8
+        
 
 # In[ ]:
 
