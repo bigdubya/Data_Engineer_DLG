@@ -7,19 +7,27 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import os
 from os import path
+import re
 
 class WeatherMax():
     '''
     pass file directory path with forward slashes
     '''
-    def __init__(self,directorypath=os.getcwd()):
+    def __init__(self,directorypath):
         self.directorypath = directorypath
+        self.df = None
+        #self.weather_result
+        #self.date 
+        #self.time 
+        #self.region 
+        
         
     def csvtodataset(self):
         os.chdir(self.directorypath)
         
         #read csv files in directory
-        
+
+            
     def patable(self):
         for file in os.listdir():
             if file.endswith(".csv"):
@@ -43,25 +51,48 @@ class WeatherMax():
                 file2 = file1 + 'parquet.snappy'
                 pq.write_table(table, file2,compression='snappy')
 
-                pq.write_to_dataset(table,root_path='weather_results',partition_cols=['ObsYear','ObsMonth','Region'])           
-              
+                pq.write_to_dataset(table,root_path='weather_results',partition_cols=['ObsYear','ObsMonth','Region'])  
+                
+    #create folder schema
     def builddataset(self):
-        self.patable()
+        self.patable()             
         
-    def weatherresults(self):
+        
+    def weathertable(self):
         weather_data = pq.ParquetDataset('weather_results/')
         table = weather_data.read()
         weather_table_df = table.to_pandas()
+        return weather_table_df
+  
+    
+    def weathermax_row(self):
+        weather_table_df = self.weathertable()
         weather_result = weather_table_df.loc[weather_table_df['ScreenTemperature'].idxmax()]
-        temp = weather_result['ScreenTemperature']
+        return weather_result
+       
+     #return max temp date
+    def weather_date(self):
+        weather_result = self.weathermax_row()
         date = weather_result['ObservationDate'][:9]
+        return date
+    
+    #return max temp
+    def weather_temp(self):
+        weather_result = self.weathermax_row()
+        temp = weather_result['ScreenTemperature']
+        return temp
+    
+    #return max temp region
+    def weather_region(self):
+        weather_result = self.weathermax_row()
         region = weather_result['Region']
-
-        print("Which date was the hottest day? ",date)
-        print("") 
-        print("What was the temperature on that day? ",temp)
-        print("")        
-        print("In which region was the hottest day? ",region) 
+        return region
+    
+    #print questions and answers
+    def prntresult(self):
+        a = "Which date was the hottest day? " + str(self.weather_date()) +'\n'
+        b = "What was the temperature on that day? " + str(self.weather_temp()) +'\n'
+        c = "In which region was the hottest day? " + str(self.weather_region())
         
-    def prntresults(self):
-        self.weatherresults()
+        result = print(a,b,c)
+        return result
