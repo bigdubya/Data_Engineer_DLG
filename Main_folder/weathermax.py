@@ -91,7 +91,7 @@ class WeatherMax():
     #print questions and answers
     def prntresult(self):
         a = "Which date was the hottest day? " + str(self.weather_date()) +'\n'
-        b = "What was the temperature on that day? " + str(self.weather_temp()) +'\n'
+        b = "What was the (max) temperature on that day? " + str(self.weather_temp()) +'\n'
         c = "In which region was the hottest day? " + str(self.weather_region())
         
         result = print(a,b,c)
